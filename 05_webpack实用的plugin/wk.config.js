@@ -1,10 +1,14 @@
 const path = require('path')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const {DefinePlugin} = require('webpack')
 
 module.exports = {
   entry: './src/main.js',
   output: {
-    filename: 'asset_bundle.js',
-    path: path.resolve(__dirname, './asset_build'),
+    filename: 'js/plugin.js', // 生成的文件放在js文件夹
+    path: path.resolve(__dirname, './plugin_build'),
   },
   module: {
     rules: [
@@ -59,5 +63,29 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'test plugin title', // index.html生成的title
+      template: './public/index.html'
+    }),
+    new DefinePlugin({
+      BASE_URL: "'./'"
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'public',
+          globOptions: {
+            ignore: [
+              '**/index.html',
+              "**/.DS.Store", // mac自带的文件，要忽略
+              "**/aaa.txt",
+            ]
+          }
+        }
+      ]
+    })
+  ]
 }

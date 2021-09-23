@@ -1,19 +1,20 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   entry: './src/main.js', // 这里可以写相对路径
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, './build') // 这里必须写绝对路径
+    filename: '02_test.js',
+    path: path.resolve(__dirname, './02_build') // 这里必须写绝对路径
   },
   module: {
     rules: [
       {
-        //使用正则表达式
+        // 使用正则表达式
         test: /\.css$/, //匹配资源
-        // loader: 'css-loader', // 直接写在 use 最外面，属于简写（只有一个 loader 的时候可以这样写）
         use: [
-          /**注意编写顺序  css-loader 要在 style-loader 后面*/
+          // {loader: 'css-loader'}, // 只有一个loader的时候可以这样写
+          // 注意css-loader 要在 style-loader 后面/
+          // 因为执行顺序 (module: 从下往上，从右往左，从后往前 )
           {
             loader: 'style-loader',
             // option: //给 loader 传值（自定义 laoder）
@@ -25,19 +26,34 @@ module.exports = {
             }
           },
           // {
-          //     loader: 'postcss-loader',
-          //     options: {
-          //         postcssOptions: {
-          //             plugins: [
-          //                 require('autoprefixer'),
-          //                 require('postcss-preset-env')
-          //             ]
-          //         }
+          //   loader: 'postcss-loader',
+          //   options: {
+          //     postcssOptions: {
+          //       plugins: [
+          //         'postcss-preset-env'
+          //         // require('autoprefixer'), // postcss-preset-env里面已经有
+          //         // require('postcss-preset-env') // 简写 'postcss-preset-env'
+          //       ]
           //     }
-          // }
+          //   }
+          // },
           'postcss-loader' // 也可以新建 postcss.config.js 文件来对 postcss 的配置进行抽取
         ]
       },
+      {
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2 // 再引入前2个 loader 来对文件处理一次
+            }
+          },
+          'postcss-loader', // 也需要作用在less，所以可以在外面定义个 postcss.config.js
+          'less-loader'
+        ]
+      }
     ]
   }
 }
