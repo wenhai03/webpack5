@@ -1,0 +1,8 @@
+@import './test.css';
+@import '../font//iconfont.css';
+
+.bg-image {
+    display: inline-block;
+    background-image: url('../img//ke.jpg');
+    background-size: contain;
+}
